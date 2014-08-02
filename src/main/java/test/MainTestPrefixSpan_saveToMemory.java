@@ -20,7 +20,7 @@ public class MainTestPrefixSpan_saveToMemory {
 	public static void main(String [] arg) throws IOException{    
 		// Load a sequence database
 		SequenceDatabase sequenceDatabase = new SequenceDatabase(); 
-		sequenceDatabase.loadFile(fileToPath("~/Dropbox/master/project/code/contextPrefixSpan.txt"));
+		sequenceDatabase.loadFile(fileToPath("contextPrefixSpan.txt"));
 		// print the database to console
 		sequenceDatabase.print();
 		
@@ -40,10 +40,8 @@ public class MainTestPrefixSpan_saveToMemory {
 	}
 	
 	public static String fileToPath(String filename) throws UnsupportedEncodingException{
-//		URL url = MainTestPrefixSpan_saveToMemory.class.getResource(filename);
-                String url = java.net.URLDecoder.decode("/Users/finito/Dropbox/master/project/code/contextPrefixSpan.txt","UTF-8");
-                 return url;
-//                return java.net.URLDecoder.decode(url.getPath(),"UTF-8");
+		URL url = MainTestPrefixSpan_saveToMemory.class.getResource(filename);
+                 return java.net.URLDecoder.decode(url.getPath(),"UTF-8");
 
         }
 }
