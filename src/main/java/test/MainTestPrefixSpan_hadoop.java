@@ -1,14 +1,14 @@
 package test;
 
+import algorithms.sequentialpatterns.BIDE_and_prefixspan.AlgoPrefixSpan;
+import algorithms.sequentialpatterns.BIDE_and_prefixspan.SequentialPattern;
+import algorithms.sequentialpatterns.BIDE_and_prefixspan.SequentialPatterns;
+import input.sequence_database_list_integers.SequenceDatabase;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.List;
 
-import algorithms.sequentialpatterns.BIDE_and_prefixspan.AlgoPrefixSpan;
-import algorithms.sequentialpatterns.BIDE_and_prefixspan.SequentialPattern;
-import algorithms.sequentialpatterns.BIDE_and_prefixspan.SequentialPatterns;
-import input.sequence_database_list_integers.SequenceDatabase;
 
 
 /**
@@ -18,9 +18,18 @@ import input.sequence_database_list_integers.SequenceDatabase;
 public class MainTestPrefixSpan_hadoop {
 
 	public static void main(String [] arg) throws IOException{    
+            
+         		// get the support from the second argument
+                double support;
+                    try {support = Double.parseDouble(arg[1]);}
+                    catch ( NumberFormatException e ) {
+                        System.out.println( "The second argument \"support\" must be a number." );
+                        return;
+         }
 		// Load a sequence database
-		SequenceDatabase sequenceDatabase = new SequenceDatabase(); 
-		sequenceDatabase.loadFile(fileToPath("~/Dropbox/master/project/code/contextPrefixSpan.txt"));
+		SequenceDatabase sequenceDatabase = new SequenceDatabase();
+                // get the sequence filename from the first argument
+		sequenceDatabase.loadFile(fileToPath(arg[0]));
 		// print the database to console
 		sequenceDatabase.print();
 		
@@ -28,8 +37,8 @@ public class MainTestPrefixSpan_hadoop {
 		AlgoPrefixSpan algo = new AlgoPrefixSpan(); 
 //		algo.setMaximumPatternLength(3);
 		
-		// execute the algorithm with minsup = 50 %
-		SequentialPatterns patterns = algo.runAlgorithm(sequenceDatabase, 0.2, null);    
+
+		SequentialPatterns patterns = algo.runAlgorithm(sequenceDatabase, support, null);    
 		algo.printStatistics(sequenceDatabase.size());
 //		System.out.println(" == PATTERNS ==");
 //		for(List<SequentialPattern> level : patterns.levels) {
@@ -41,8 +50,7 @@ public class MainTestPrefixSpan_hadoop {
 	
 	public static String fileToPath(String filename) throws UnsupportedEncodingException{
 //		URL url = MainTestPrefixSpan_saveToMemory.class.getResource(filename);
-//                String url = java.net.URLDecoder.decode("/Users/finito/Dropbox/master/project/code/contextPrefixSpan.txt","UTF-8");
-                String url = java.net.URLDecoder.decode("/Users/finito/Dropbox/master/project/code/dario3.txt","UTF-8");
+                String url = java.net.URLDecoder.decode(filename,"UTF-8");
 
                 return url;
 //                return java.net.URLDecoder.decode(url.getPath(),"UTF-8");
