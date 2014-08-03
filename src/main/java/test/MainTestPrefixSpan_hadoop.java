@@ -31,7 +31,7 @@ public class MainTestPrefixSpan_hadoop {
                 // get the sequence filename from the first argument
 		sequenceDatabase.loadFile(fileToPath(arg[0]));
 		// print the database to console
-		sequenceDatabase.print();
+//		sequenceDatabase.print();
 		
 		// Create an instance of the algorithm 
 		AlgoPrefixSpan algo = new AlgoPrefixSpan(); 
