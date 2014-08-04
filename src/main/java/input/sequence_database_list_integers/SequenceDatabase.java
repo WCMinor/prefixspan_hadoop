@@ -64,8 +64,9 @@ public class SequenceDatabase {
 					addSequence(thisLine.split(" "));
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+                        System.out.println("The first argument must be the input file name");
+			throw e;
 		} finally {
 			if (myInput != null) {
 				myInput.close();
