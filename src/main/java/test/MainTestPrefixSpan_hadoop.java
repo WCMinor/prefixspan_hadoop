@@ -14,11 +14,10 @@ import java.io.UnsupportedEncodingException;
 public class MainTestPrefixSpan_hadoop {
 
 	public static void main(String [] arg) throws IOException{    
-            
          		// get the support from the second argument
                 double support;
                     try {
-                support = Double.parseDouble(arg[1]);
+                    support = Double.parseDouble(arg[1]);
                     }catch ( NumberFormatException e ) {
                         System.out.println( "The second argument \"support\" must be a number.");
                   return;
@@ -47,9 +46,7 @@ public class MainTestPrefixSpan_hadoop {
 	
 	public static String fileToPath(String filename) throws UnsupportedEncodingException{
 
-            String url = java.net.URLDecoder.decode(filename,"UTF-8");
-                return url;
- 
+            return java.net.URLDecoder.decode(filename,"UTF-8");
 
         }
 }
