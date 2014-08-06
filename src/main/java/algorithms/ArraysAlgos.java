@@ -102,8 +102,6 @@ public class ArraysAlgos {
 	
 	/**
 	 * This method performs the intersection of two sorted arrays of integers and return a new sorted array.
-	 * @param a the first array
-	 * @param b the second array
 	 * @return the resulting sorted array
 	 */
 	public static int[] intersectTwoSortedArrays(int[] array1, int[] array2){

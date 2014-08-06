@@ -52,6 +52,19 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../hadoop-1.2.1/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../hadoop-1.2.1/lib" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/../../../hadoop-1.2.1/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../../hadoop-1.2.1/lib" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

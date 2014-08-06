@@ -33,6 +33,7 @@ import org.apache.hadoop.fs.Path;
 
         public static void main(String[] args) throws Exception
         {
+            System.out.println("hola");
             int res = ToolRunner.run(new Configuration(), new WordCount(),args);
             System.exit(res);
         }
