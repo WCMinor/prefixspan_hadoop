@@ -4,7 +4,7 @@ package hadoop;
  * Created by WCMinor on 05/08/2014.
  */
 
-import algorithms.sequentialpatterns.BIDE_and_prefixspan.AlgoPrefixSpan;
+import algorithms.PrefixSpan.AlgoPrefixSpan;
 import input.sequence_database_list_integers.SequenceDatabase;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
