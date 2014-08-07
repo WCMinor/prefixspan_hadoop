@@ -8,6 +8,8 @@ package hadoop;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.*;
 import java.io.File;
@@ -25,8 +27,8 @@ public class PrefixSpanHadoop extends Configured implements Tool{
         conf.setJobName("PrefixSpan");
 
         //Setting configuration object with the Data Type of output Key and Value
-        conf.setOutputKeyClass(Integer.class);
-        conf.setOutputValueClass(String.class);
+        conf.setOutputKeyClass(IntWritable.class);
+        conf.setOutputValueClass(Text.class);
 
         //Providing the mapper and reducer class names
         conf.setMapperClass(PrefixSpanMapper.class);
