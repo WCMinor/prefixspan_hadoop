@@ -513,6 +513,29 @@ loopSeq:for(PseudoSequence sequence : initialDatabase){
 		}
 		System.out.println(r.toString());
 	}
+
+    /**
+     * Return statistics about the algorithm execution to System.out.
+     * @param size  the size of the database
+     */
+    public String getStatistics(int size) {
+        StringBuffer r = new StringBuffer(200);
+        r.append("=============  PREFIXSPAN - STATISTICS =============\n Total time ~ ");
+        r.append(endTime - startTime);
+        r.append(" ms\n");
+        r.append(" Frequent sequences count : " + patternCount);
+        r.append('\n');
+        r.append(" Max memory (mb) : " );
+        r.append(MemoryLogger.getInstance().getMaxMemory());
+        r.append(patternCount);
+        r.append('\n');
+        r.append("===================================================\n");
+        // if the result was save into memory, print it
+        if(patterns !=null){
+            patterns.printFrequentPatterns(size);
+        }
+        return(r.toString());
+    }
 	
 	/**
 	 * Get the maximum length of patterns to be found (in terms of item count)
