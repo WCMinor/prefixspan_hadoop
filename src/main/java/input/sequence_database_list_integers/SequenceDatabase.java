@@ -78,7 +78,7 @@ public class SequenceDatabase {
 	 * Method to process a line from the input file
 	 * @param tokens A list of tokens from the line (which were separated by spaces in the original file).
 	 */
-	void addSequence(String[] tokens) { 
+    public void addSequence(String[] tokens) {
 		// create a new Sequence to store the sequence
 		Sequence sequence = new Sequence(sequences.size());
 		// create a list of strings for the first itemset.
