@@ -22,6 +22,8 @@ public class PrefixSpanReducer extends MapReduceBase implements Reducer<IntWrita
         while (values.hasNext())
         {
             results.append(values.next());
+
+
         }
         sum.set(results.toString());
 

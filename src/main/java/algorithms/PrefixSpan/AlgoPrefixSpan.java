@@ -519,7 +519,10 @@ loopSeq:for(PseudoSequence sequence : initialDatabase){
      */
     public String getPatterns() {
         StringBuffer r = new StringBuffer(200);
-        r.append(" Frequent sequences count : " + patternCount);
+//        r.append(" Frequent sequences count : " + patternCount);
+
+        r.append(patterns.getLevelCount());
+//        r.append(patterns.getLevel(patterns.getLevelCount() -1));
         return(r.toString());
     }
 	
