@@ -54,8 +54,17 @@ public class SequentialPatterns {
 	public void printFrequentPatterns(int nbObject){
 		System.out.println(toString(nbObject));
 	}
-	
-	/**
+
+    /**
+     * get all sequential patterns to System.out.
+     * @param nbObject the size of the original database in terms of sequences.
+     */
+    public String getFrequentPatterns(int nbObject){
+        return(toString(nbObject));
+    }
+
+
+    /**
 	 * Get a string representation of this set of sequential patterns.
 	 * @param nbObject  the number of sequences in the database where these patterns were found.
 	 * @return a string

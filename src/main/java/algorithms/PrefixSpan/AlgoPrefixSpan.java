@@ -153,7 +153,7 @@ public class AlgoPrefixSpan{
 		// We note the sequences in which the items appear.
 		Map<Integer, Set<Integer>> mapSequenceID = findSequencesContainingItems(database);
 		
-		// WE CONVERT THE DATABASE ITON A PSEUDO-DATABASE, AND REMOVE
+		// WE CONVERT THE DATABASE INTO A PSEUDO-DATABASE, AND REMOVE
 		// THE ITEMS OF SIZE 1 THAT ARE NOT FREQUENT, SO THAT THE ALGORITHM 
 		// WILL NOT CONSIDER THEM ANYMORE. 
 		
@@ -517,12 +517,12 @@ loopSeq:for(PseudoSequence sequence : initialDatabase){
     /**
      * Return the patterncount
      */
-    public String getPatterns() {
+    public String getStatistics(int size) {
         StringBuffer r = new StringBuffer(200);
-//        r.append(" Frequent sequences count : " + patternCount);
-
-        r.append(patterns.getLevelCount());
-//        r.append(patterns.getLevel(patterns.getLevelCount() -1));
+        r.append(" Frequent sequences count : " + patternCount);
+        if(patterns !=null) {
+            r.append(patterns.getFrequentPatterns(size));
+        }
         return(r.toString());
     }
 	

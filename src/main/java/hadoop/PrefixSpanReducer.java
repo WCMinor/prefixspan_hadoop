@@ -1,33 +1,39 @@
 package hadoop;
 
+import algorithms.PrefixSpan.AlgoPrefixSpan;
+import input.sequence_database_list_integers.SequenceDatabase;
 import org.apache.hadoop.mapred.Reducer;
-
-
 import java.io.IOException;
 import java.util.Iterator;
-
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
 
 public class PrefixSpanReducer extends MapReduceBase implements Reducer<IntWritable, Text, IntWritable, Text>{
 
-    private static Text sum = new Text();
+    private static Text stats = new Text();
 
     //reduce method accepts the Key Value pairs from mappers, do the aggregation based on keys and produce the final out put
     public void reduce(IntWritable key, Iterator<Text> values, OutputCollector<IntWritable, Text> output, Reporter reporter) throws IOException
     {
-//            /*iterates through all the values available with a key and add them together and give the
-//            final result as the key and sum of its values*/
-        StringBuffer results = new StringBuffer();
+
+
+        // Create an instance of the algorithm
+        // it is currently giving heap memory problems when doing some serious stuff, please take care of it
+        AlgoPrefixSpan algo = new AlgoPrefixSpan();
+        //create a sequence database and feed it with the mapper chewed data
+        SequenceDatabase sequenceDatabase = new SequenceDatabase();
+        /*iterates through all the values available with a key and add them together and give the
+        final result as the key and sum of its values*/
         while (values.hasNext())
         {
-            results.append(values.next());
-
-
+            sequenceDatabase.addSequence(values.next().toString().split(" "));
         }
-        sum.set(results.toString());
+        //set a default 0.5 support, fixme
+        double support = 0.5;
+        algo.runAlgorithm(sequenceDatabase, support, null);
+        stats.set(algo.getStatistics(sequenceDatabase.size()));
 
-        output.collect(key, sum);
+        output.collect(key, stats);
     }
 
 
