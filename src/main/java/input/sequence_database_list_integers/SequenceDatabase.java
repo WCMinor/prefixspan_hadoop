@@ -82,36 +82,60 @@ public class SequenceDatabase {
 		// create a new Sequence to store the sequence
 		Sequence sequence = new Sequence(sequences.size());
 		// create a list of strings for the first itemset.
-		
+
 		List<Integer> itemset = new ArrayList<Integer>();
 		// for each token in this line
 		for (String token : tokens) {
-			// if the token start with "<", it indicates a timestamp. 
+			// if the token start with "<", it indicates a timestamp.
 			// We just ignore it because algorithms that use this class
 			// don't need it.
-			if (token.codePointAt(0) == '<') { 
+			if (token.codePointAt(0) == '<') {
 				// we ignore
-			} 
+			}
 			// if the token is -1, it means that we reached the end of an itemset.
-			else if (token.equals("-1")) { 
+			else if (token.equals("-1")) {
 				// add the current itemset to the sequence
 				sequence.addItemset(itemset);
 				// create a new itemset
 				itemset = new ArrayList<Integer>();
-			} 
-			// if the token is -2, it means that we reached the end of 
+			}
+			// if the token is -2, it means that we reached the end of
 			// the sequence.
-			else if (token.equals("-2")) { 
+			else if (token.equals("-2")) {
 				// we add it to the list of sequences
 				sequences.add(sequence);
-			} else { 
+			} else {
 				// otherwise it is an item.
-				// we parse it as an integer and add it to 
+				// we parse it as an integer and add it to
 				// the current itemset.
 				itemset.add(Integer.parseInt(token));
 			}
 		}
 	}
+
+    /**
+     * Method to process a line from the input file
+     * @param tokens
+     */
+    public void addMappedSequence(String[] tokens) {
+        if (tokens[0].isEmpty()){
+            return;
+        }
+
+        // create a new Sequence to store the sequence
+        Sequence sequence = new Sequence(sequences.size());
+        // create a list of strings for the first itemset.
+
+        List<Integer> itemset = new ArrayList<Integer>();
+        // for each token in this line
+        for (String token : tokens) {
+
+                // we parse it as an integer and add it to
+                // the current itemset.
+                itemset.add(Integer.parseInt(token));
+            }
+            sequence.addItemset(itemset);
+    }
 
 	/**
 	 * Method to add a sequence to this sequence database

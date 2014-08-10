@@ -472,7 +472,7 @@ loopSeq:for(PseudoSequence sequence : initialDatabase){
 	 */
 	private SequentialPattern appendItemToSequence(SequentialPattern prefix, Integer item) {
 		SequentialPattern newPrefix = prefix.cloneSequence();  // isSuffix
-		newPrefix.addItemset(new Itemset(item));  // cr�� un nouvel itemset   + decalage
+		newPrefix.addItemset(new Itemset(item));  // cree un nouvel itemset   + decalage
 		return newPrefix;
 	}
 	
@@ -514,17 +514,36 @@ loopSeq:for(PseudoSequence sequence : initialDatabase){
 		System.out.println(r.toString());
 	}
 
+
     /**
-     * Return the patterncount
+     * Get statistics about the algorithm execution.
+     * @param size  the size of the database
      */
     public String getStatistics(int size) {
         StringBuffer r = new StringBuffer(200);
+        r.append("=============  PREFIXSPAN - STATISTICS =============\n Total time ~ ");
+        r.append(endTime - startTime);
+        r.append(" ms\n");
         r.append(" Frequent sequences count : " + patternCount);
-        if(patterns !=null) {
-            r.append(patterns.getFrequentPatterns(size));
+        r.append('\n');
+        r.append(" Max memory (mb) : " );
+        r.append(MemoryLogger.getInstance().getMaxMemory());
+        r.append(patternCount);
+        r.append('\n');
+        r.append("===================================================\n");
+        // if the result was save into memory, print it
+        if(patterns !=null){
+            patterns.printFrequentPatterns(size);
         }
         return(r.toString());
     }
+    /**
+     * Return the patterns
+     */
+    public String getSequences(int size) {
+        return patterns.getSequences(size);
+    }
+
 	
 	/**
 	 * Get the maximum length of patterns to be found (in terms of item count)

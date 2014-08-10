@@ -1,6 +1,7 @@
 package algorithms.PrefixSpan;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -46,8 +47,10 @@ public class SequentialPatterns {
 		// for patterns of size 0.
 		levels.add(new ArrayList<SequentialPattern>()); 
 	}
-	
-	/**
+
+
+
+    /**
 	 * Print all sequential patterns to System.out.
 	 * @param nbObject the size of the original database in terms of sequences.
 	 */
@@ -56,11 +59,21 @@ public class SequentialPatterns {
 	}
 
     /**
-     * get all sequential patterns to System.out.
+     * get all sequential patterns.
      * @param nbObject the size of the original database in terms of sequences.
      */
-    public String getFrequentPatterns(int nbObject){
-        return(toString(nbObject));
+    public String getSequences(int nbObject){
+        StringBuffer r = new StringBuffer(200);
+        int levelCount=0;
+        int patternCount =0;
+        for(List<SequentialPattern> level : levels){
+            for(SequentialPattern sequence : level){
+                patternCount++;
+                r.append(sequence.toString());
+            }
+            levelCount++;
+        }
+        return  r.toString();
     }
 
 
