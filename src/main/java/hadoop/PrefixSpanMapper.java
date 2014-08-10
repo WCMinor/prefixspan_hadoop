@@ -13,8 +13,8 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
     private static IntWritable item = new IntWritable();
 
     public void map(LongWritable key, Text value, OutputCollector<IntWritable, Text> output, Reporter reporter) throws IOException {
-//        item.set(key.hashCode());
-        item.set(1);
+        item.set(key.hashCode());
+//        item.set(1);
         // Create an instance of the algorithm
         // it is currently giving heap memory problems when doing some serious stuff, please take care of it
         AlgoPrefixSpan algo = new AlgoPrefixSpan();
