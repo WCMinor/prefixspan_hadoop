@@ -104,6 +104,7 @@ public class SequenceDatabase {
 			else if (token.equals("-2")) {
 				// we add it to the list of sequences
 				sequences.add(sequence);
+                sequence = new Sequence(sequences.size());
 			} else {
 				// otherwise it is an item.
 				// we parse it as an integer and add it to
