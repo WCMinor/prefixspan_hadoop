@@ -83,7 +83,7 @@ public class PrefixSpanReducer extends MapReduceBase implements Reducer<IntWrita
             }
 
         }
-        double support = 0.5;
+        double support = 0.8;
         algo.runAlgorithm(sequenceDatabase, support, null);
         results.set(algo.getStatistics(sequenceDatabase.size()));
 

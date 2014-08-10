@@ -25,6 +25,7 @@ public class PrefixSpanHadoop extends Configured implements Tool{
         //creating a JobConf object and assigning a Hadoop job name for identification purposes
         JobConf conf = new JobConf(getConf(), PrefixSpanHadoop.class);
         conf.setJobName("PrefixSpan");
+        conf.setInputFormat(customTextInputFormat.class);
 
         //Setting configuration object with the Data Type of output Key and Value
         conf.setOutputKeyClass(IntWritable.class);
@@ -41,7 +42,6 @@ public class PrefixSpanHadoop extends Configured implements Tool{
             FileUtils.deleteDirectory(output);
         }
         FileOutputFormat.setOutputPath(conf, new Path(arg[1]));
-
         JobClient.runJob(conf);
 
         return 0;

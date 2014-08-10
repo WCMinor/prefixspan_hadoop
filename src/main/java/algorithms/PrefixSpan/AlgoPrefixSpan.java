@@ -54,7 +54,8 @@ public class AlgoPrefixSpan{
 	int patternCount;
 	
 	// absolute minimum support
-	private int minsuppAbsolute;
+//	private int minsuppAbsolute;
+    private double minsuppAbsolute;
 
 	// writer to write output file
 	BufferedWriter writer = null;
@@ -83,7 +84,9 @@ public class AlgoPrefixSpan{
 	 */
 	public SequentialPatterns runAlgorithm(SequenceDatabase database, double minsupRelative, String outputFilePath) throws IOException {
 		// convert to a absolute minimum support
-		this.minsuppAbsolute = (int) Math.ceil(minsupRelative * database.size());
+
+//		this.minsuppAbsolute = (int) Math.ceil(minsupRelative * database.size());
+		this.minsuppAbsolute = (minsupRelative * database.size());
 		if(this.minsuppAbsolute == 0){ // protection
 			this.minsuppAbsolute = 1;
 		}

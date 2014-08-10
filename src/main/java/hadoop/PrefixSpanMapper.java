@@ -12,9 +12,9 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
     private static Text chewed = new Text();
     private static IntWritable item = new IntWritable();
 
-    public void map(LongWritable key, Text value, OutputCollector<IntWritable, Text> output, Reporter reporter) throws IOException {
-        item.set(key.hashCode());
-//        item.set(1);
+        public void map(LongWritable key, Text value, OutputCollector<IntWritable, Text> output, Reporter reporter) throws IOException {
+//        public void map(LongWritable key, Text value, OutputCollector<IntWritable, Text> output, Reporter reporter) throws IOException {
+        item.set(1);
         // Create an instance of the algorithm
         // it is currently giving heap memory problems when doing some serious stuff, please take care of it
         AlgoPrefixSpan algo = new AlgoPrefixSpan();
@@ -24,7 +24,7 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
         final result as the key and sum of its values*/
         sequenceDatabase.addSequence(value.toString().split(" "));
         //set a default 0.5 support, fixme
-        double support = 0.5;
+        double support = 0.8;
         algo.runAlgorithm(sequenceDatabase, support, null);
         for (Sequence sequence : sequenceDatabase.getSequences()) {
             chewed.set(String.valueOf(sequence)+"endOfSequence");//last append indicates the end of the sequence
