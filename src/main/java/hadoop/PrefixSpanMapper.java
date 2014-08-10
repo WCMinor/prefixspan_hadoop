@@ -1,15 +1,10 @@
 package hadoop;
 
-import com.sun.jdi.IntegerValue;
 import org.apache.hadoop.mapred.Mapper;
 import java.io.IOException;
-import java.util.Iterator;
-
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
 import algorithms.PrefixSpan.*;
-import algorithms.PrefixSpan.SequentialPatterns;
-
 import input.sequence_database_list_integers.*;
 
 public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritable, Text, IntWritable, Text>{
@@ -17,14 +12,6 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
     private static Text chewed = new Text();
     private static IntWritable item = new IntWritable();
 
-    //map method that populates the sequence database for each mapper
-//    public void map(LongWritable key, Text value, OutputCollector<IntWritable, Text> output, Reporter reporter) throws IOException
-//    {
-//        chewed.set(value);
-//        item.set(1);
-//
-//        output.collect(item, chewed);
-//    }
     public void map(LongWritable key, Text value, OutputCollector<IntWritable, Text> output, Reporter reporter) throws IOException {
 //        item.set(key.hashCode());
         item.set(1);
@@ -43,10 +30,5 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
             chewed.set(String.valueOf(sequence)+"endOfSequence");//last append indicates the end of the sequence
             output.collect(item, chewed);
         }
-//        String[] sub_buffer = algo.getSequences(sequenceDatabase.size()).split("  ");
-//        for (int i = 0; i < sub_buffer.length; i++) {
-//            sub_buffer[i] = sub_buffer[i].replaceAll("[()]", "");
-//            chewed.set(sub_buffer[i]);
-//        }
     }
 }
