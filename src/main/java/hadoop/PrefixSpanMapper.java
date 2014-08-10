@@ -26,8 +26,8 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
 //        output.collect(item, chewed);
 //    }
     public void map(LongWritable key, Text value, OutputCollector<IntWritable, Text> output, Reporter reporter) throws IOException {
-        item.set(key.hashCode());
-
+//        item.set(key.hashCode());
+        item.set(1);
         // Create an instance of the algorithm
         // it is currently giving heap memory problems when doing some serious stuff, please take care of it
         AlgoPrefixSpan algo = new AlgoPrefixSpan();
@@ -39,11 +39,14 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
         //set a default 0.5 support, fixme
         double support = 0.5;
         algo.runAlgorithm(sequenceDatabase, support, null);
-        String[] sub_buffer = algo.getSequences(sequenceDatabase.size()).split("  ");
-        for (int i = 0; i < sub_buffer.length; i++) {
-            sub_buffer[i] = sub_buffer[i].replaceAll("[()]", "");
-            chewed.set(sub_buffer[i]);
+        for (Sequence sequence : sequenceDatabase.getSequences()) {
+            chewed.set(String.valueOf(sequence)+"endOfSequence");//last append indicates the end of the sequence
             output.collect(item, chewed);
         }
+//        String[] sub_buffer = algo.getSequences(sequenceDatabase.size()).split("  ");
+//        for (int i = 0; i < sub_buffer.length; i++) {
+//            sub_buffer[i] = sub_buffer[i].replaceAll("[()]", "");
+//            chewed.set(sub_buffer[i]);
+//        }
     }
 }

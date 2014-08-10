@@ -1,12 +1,15 @@
 package hadoop;
 
 import algorithms.PrefixSpan.AlgoPrefixSpan;
-import input.sequence_database_array_integers.Sequence;
+import input.sequence_database_list_integers.Sequence;
 import input.sequence_database_list_integers.SequenceDatabase;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.hadoop.mapred.Reducer;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
 
@@ -48,18 +51,41 @@ public class PrefixSpanReducer extends MapReduceBase implements Reducer<IntWrita
         //create a sequence database from the mappers output
         SequenceDatabase sequenceDatabase = new SequenceDatabase();
 
-        //StringBuffer buffer = new StringBuffer();
+
+
         while (values.hasNext())
         {
-            String[] tokens = values.next().toString().split(" ");
-                sequenceDatabase.addMappedSequence(tokens);
-      //      buffer.append(values.next() + "\n");
-        }
+            String[] tokens = values.next().toString().split("[)]");
+            if (tokens[0].isEmpty()){
+                continue;
+            }
+            Sequence sequence = new Sequence(sequenceDatabase.size());
 
+            // for each token in this line
+            for (String token : tokens) {
+
+                token=token.replaceAll("[(]","");
+                String[] subtoken=token.split(" ");
+                if (token.replaceAll("[ ]","").equals("endOfSequence")){
+                    sequenceDatabase.addMappedSequence(sequence);
+                    break;
+                }
+                // we parse it as an integer and add it to
+                // the current itemset.
+                List<Integer> itemset = new ArrayList<Integer>();
+                for (String i :subtoken){
+                    if (i==null){
+                        continue;
+                    }
+                    itemset.add(Integer.parseInt(i));
+                }
+                sequence.addItemset(itemset);
+            }
+
+        }
         double support = 0.5;
         algo.runAlgorithm(sequenceDatabase, support, null);
-        results.set(algo.getSequences(sequenceDatabase.size()));
-//        results.set(buffer.toString());
+        results.set(algo.getStatistics(sequenceDatabase.size()));
 
         output.collect(key, results);
     }

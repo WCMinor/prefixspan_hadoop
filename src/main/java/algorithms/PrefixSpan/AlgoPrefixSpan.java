@@ -533,7 +533,7 @@ loopSeq:for(PseudoSequence sequence : initialDatabase){
         r.append("===================================================\n");
         // if the result was save into memory, print it
         if(patterns !=null){
-            patterns.printFrequentPatterns(size);
+            r.append(patterns.getFrequentPatterns(size));
         }
         return(r.toString());
     }

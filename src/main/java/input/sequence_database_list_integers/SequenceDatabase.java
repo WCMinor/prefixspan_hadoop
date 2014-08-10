@@ -115,26 +115,11 @@ public class SequenceDatabase {
 
     /**
      * Method to process a line from the input file
-     * @param tokens
+     * @param sequence
      */
-    public void addMappedSequence(String[] tokens) {
-        if (tokens[0].isEmpty()){
-            return;
-        }
-
-        // create a new Sequence to store the sequence
-        Sequence sequence = new Sequence(sequences.size());
-        // create a list of strings for the first itemset.
-
-        List<Integer> itemset = new ArrayList<Integer>();
-        // for each token in this line
-        for (String token : tokens) {
-
-                // we parse it as an integer and add it to
-                // the current itemset.
-                itemset.add(Integer.parseInt(token));
-            }
-            sequence.addItemset(itemset);
+    public void addMappedSequence(Sequence sequence) {
+        // add a sequence to de sequence database
+        sequences.add(sequence);
     }
 
 	/**
