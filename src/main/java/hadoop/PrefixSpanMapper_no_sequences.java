@@ -1,19 +1,24 @@
 package hadoop;
 
+import algorithms.PrefixSpan.AlgoPrefixSpan;
+import input.sequence_database_list_integers.SequenceDatabase;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.MapReduceBase;
 import org.apache.hadoop.mapred.Mapper;
-import java.io.IOException;
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapred.*;
-import algorithms.PrefixSpan.*;
-import input.sequence_database_list_integers.*;
+import org.apache.hadoop.mapred.OutputCollector;
+import org.apache.hadoop.mapred.Reporter;
 
-public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text>{
+import java.io.IOException;
+
+public class PrefixSpanMapper_no_sequences extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text>{
     //hadoop supported data types
     private static Text supportvalue = new Text();
     private static Text patternkey = new Text();
 
+
     public void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
-//        item.set(key.hashCode());
+        patternkey.set("unique");
         // Create an instance of the algorithm
         // it is currently giving heap memory problems when doing some serious stuff, please take care of it
         AlgoPrefixSpan algo = new AlgoPrefixSpan();
@@ -25,11 +30,7 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
         //set a default 0.5 support, fixme
         double support = 0.5;
         algo.runAlgorithm(sequenceDatabase, support, null);
-        String[] listOfPatterns = algo.getFrequentPatterns(sequenceDatabase.size()).split("next");
-        for (String pattern: listOfPatterns){
-            patternkey.set(pattern.split("support")[0]);
-            supportvalue.set(pattern.split("support")[1]);
+            supportvalue.set(String.valueOf(sequenceDatabase.size()));
             output.collect(patternkey, supportvalue);
-        }
     }
 }

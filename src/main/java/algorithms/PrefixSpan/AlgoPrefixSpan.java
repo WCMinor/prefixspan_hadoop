@@ -544,6 +544,13 @@ loopSeq:for(PseudoSequence sequence : initialDatabase){
         return patterns.getSequences(size);
     }
 
+    /**
+     * Return the patterns
+     */
+    public String getFrequentPatterns(int size) {
+        return patterns.getFrequentPatterns(size);
+    }
+
 	
 	/**
 	 * Get the maximum length of patterns to be found (in terms of item count)

@@ -63,7 +63,7 @@ public class SequentialPatterns {
      * @param nbObject the size of the original database in terms of sequences.
      */
     public String getFrequentPatterns(int nbObject){
-        return(toString(nbObject));
+        return(toStringList(nbObject));
     }
 
     /**
@@ -82,6 +82,31 @@ public class SequentialPatterns {
             levelCount++;
         }
         return  r.toString();
+    }
+    /**
+     * Get a list of sequential patterns and its support.
+     * @param nbObject  the number of sequences in the database where these patterns were found.
+     * @return a string
+     */
+    public String toStringList(int nbObject){
+        StringBuffer r = new StringBuffer(200);
+        int levelCount=0;
+        int patternCount =0;
+        for(List<SequentialPattern> level : levels){
+            //posibility of printing levels
+//            r.append("  L");
+//            r.append(levelCount);
+//            r.append(" \n");
+            for(SequentialPattern sequence : level){
+                patternCount++;
+                r.append(sequence.toString().replaceAll(" ", ""));
+                r.append("support");
+                r.append(sequence.getAbsoluteSupport());
+                r.append("next");
+            }
+            levelCount++;
+        }
+        return r.toString();
     }
 
 
