@@ -40,24 +40,32 @@ public class PrefixSpanHadoop extends Configured implements Tool{
 //        conf.set("test", "10");
         conf.setMapperClass(PrefixSpanMapper_no_sequences.class);
         conf.setReducerClass(PrefixSpanReducer_no_sequences.class);
+        conf.set("Support", arg[1]);
+
         //the hdfs input and output directory to be fetched from the command line
+        FileSystem fs = FileSystem.get(conf);
         FileInputFormat.addInputPath(conf, new Path(arg[0]));
-        File output = new  File(arg[1]);
-        if (output.exists()){
-            FileUtils.deleteDirectory(output);
+        Path output1 = new  Path("numOfSeq");
+        FileOutputFormat.setOutputPath(conf, output1);
+        if(fs.exists(output1))
+        {
+            fs.delete(output1, true); //Delete existing Directory
         }
-        FileOutputFormat.setOutputPath(conf, new Path(arg[1]));
 
         JobClient.runJob(conf);
 
-        FileSystem fs = FileSystem.get(conf);
-        Path seqCountPath = new Path("output1/part-00000");
+        Path seqCountPath = new Path("numOfSeq/part-00000");
         BufferedReader bfr=new BufferedReader(new InputStreamReader(fs.open(seqCountPath)));
         String numOfSeq = bfr.readLine().replaceAll("[^\\d.]", "");
 
         //creating a JobConf object and assigning a Hadoop job name for identification purposes
         JobConf conf2 = new JobConf(getConf(), PrefixSpanHadoop.class);
-        conf2.setJobName("PrefixSpan");
+        Path output2 = new  Path("output");
+        if(fs.exists(output2))
+        {
+            fs.delete(output2, true); //Delete existing Directory
+        }
+        conf2.setJobName("Counting and joining");
 
         //Setting configuration object with the Data Type of output Key and Value
         conf2.setOutputKeyClass(Text.class);
@@ -66,11 +74,12 @@ public class PrefixSpanHadoop extends Configured implements Tool{
         //Providing the mapper and reducer class names
         conf2.setMapperClass(PrefixSpanMapper.class);
         conf2.setReducerClass(PrefixSpanReducer.class);
-        conf2.set("test", numOfSeq);
+        conf2.set("noSeq", numOfSeq);
+        conf2.set("Support", arg[1]);
         //the hdfs input and output directory to be fetched from the command line
         FileInputFormat.addInputPath(conf2, new Path(arg[0]));
 
-        FileOutputFormat.setOutputPath(conf2, new Path("output2"));
+        FileOutputFormat.setOutputPath(conf2, output2);
         JobClient.runJob(conf2);
 
 
@@ -81,7 +90,7 @@ public class PrefixSpanHadoop extends Configured implements Tool{
         //         		get the support from the second argument
 
         if (arg.length != 2){
-            System.out.println("The number of arguments must be 2, \"input path\" and \"output\"");
+            System.out.println("The number of arguments must be 2, \"input path\" and \"support\"");
             System.exit(2);
         }
         int res = ToolRunner.run(new Configuration(), new PrefixSpanHadoop(), arg);

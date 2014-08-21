@@ -12,9 +12,11 @@ import org.apache.hadoop.mapred.*;
 public class PrefixSpanReducer extends MapReduceBase implements Reducer<Text, Text, Text, Text>{
 
     private static long noOfSequences;
+    private static Double Support;
 
     public void configure(JobConf job) {
-        noOfSequences = Long.parseLong(job.get("test"));
+        noOfSequences = Long.parseLong(job.get("noSeq"));
+        Support = Double.valueOf(job.get("Support"));
     }
 
     private static Text results = new Text();
@@ -26,7 +28,9 @@ public class PrefixSpanReducer extends MapReduceBase implements Reducer<Text, Te
             support = support + Long.valueOf(values.next().toString());
         }
         totalSupport = (support*100/noOfSequences);
-        results.set(String.valueOf(totalSupport)+"%");
-        output.collect(key, results);
+        if (totalSupport >= Support*100) {
+            results.set(String.valueOf(totalSupport) + "%");
+            output.collect(key, results);
+        }
     }
 }

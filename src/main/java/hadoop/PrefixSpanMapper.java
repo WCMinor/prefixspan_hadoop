@@ -11,6 +11,11 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
     //hadoop supported data types
     private static Text supportvalue = new Text();
     private static Text patternkey = new Text();
+    private static Double Support;
+
+    public void configure(JobConf job) {
+        Support = Double.valueOf(job.get("Support"));
+    }
 
     public void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
 //        item.set(key.hashCode());
@@ -22,9 +27,7 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
         /*iterates through all the values available with a key and add them together and give the
         final result as the key and sum of its values*/
         sequenceDatabase.addSequence(value.toString().split(" "));
-        //set a default 0.5 support, fixme
-        double support = 0.5;
-        algo.runAlgorithm(sequenceDatabase, support, null);
+        algo.runAlgorithm(sequenceDatabase, Support, null);
         String[] listOfPatterns = algo.getFrequentPatterns(sequenceDatabase.size()).split("next");
         for (String pattern: listOfPatterns){
             patternkey.set(pattern.split("support")[0]);
