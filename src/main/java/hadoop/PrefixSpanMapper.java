@@ -1,24 +1,23 @@
 package hadoop;
 
-import org.apache.hadoop.mapred.Mapper;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.mapreduce.Mapper;
 import java.io.IOException;
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapred.*;
 import algorithms.PrefixSpan.*;
 import input.sequence_database_list_integers.*;
 
-public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text>{
+public class PrefixSpanMapper extends Mapper<LongWritable, Text, Text, Text>{
     //hadoop supported data types
     private static Text supportvalue = new Text();
     private static Text patternkey = new Text();
-    private static Double Support;
 
-    public void configure(JobConf job) {
-        Support = Double.valueOf(job.get("Support"));
-    }
 
-    public void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
-//        item.set(key.hashCode());
+
+    public void map(LongWritable key, Text value, Context context) throws IOException {
+        Configuration conf = context.getConfiguration();
+        Double Support = Double.valueOf(conf.get("Support"));
+        //        item.set(key.hashCode());
         // Create an instance of the algorithm
         // it is currently giving heap memory problems when doing some serious stuff, please take care of it
         AlgoPrefixSpan algo = new AlgoPrefixSpan();
@@ -32,7 +31,18 @@ public class PrefixSpanMapper extends MapReduceBase implements Mapper<LongWritab
         for (String pattern: listOfPatterns){
             patternkey.set(pattern.split("support")[0]);
             supportvalue.set(pattern.split("support")[1]);
-            output.collect(patternkey, supportvalue);
+            try {
+                context.write(patternkey, supportvalue);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        patternkey.set("size");
+        supportvalue.set(String.valueOf(sequenceDatabase.size()));
+        try {
+            context.write(patternkey, supportvalue);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
