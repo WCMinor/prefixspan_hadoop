@@ -1,6 +1,5 @@
 package hadoop;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapred.Reducer;
 import java.io.IOException;
 import java.util.Iterator;
