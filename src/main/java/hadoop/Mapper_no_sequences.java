@@ -1,7 +1,5 @@
 package hadoop;
 
-//import org.apache.commons.codec.binary.StringUtils;
-
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -23,6 +21,7 @@ public class Mapper_no_sequences extends Mapper<LongWritable, Text, Text, Text> 
                 sum = sum+Integer.parseInt(size[i+1].split("\n")[0]);
             }
         }
+
         result.set("size "+String.valueOf(sum));
             context.write(newkey, result);
     }
