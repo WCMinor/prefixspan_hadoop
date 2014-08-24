@@ -87,48 +87,6 @@ public class PrefixSpanHadoop extends Configured implements Tool{
 
         }
 
-//        //reiterate the mapper until no more lines in the input
-//        while (true) {
-//
-//            Configuration NoSequences2Conf = new Configuration();
-//            Job NoSequences2 = new Job(NoSequences2Conf);
-//            NoSequences2.setJobName("counting sequences");
-//            NoSequences2.setJarByClass(PrefixSpanHadoop.class);
-//            //Providing the mapper and reducer class names
-//            NoSequences2.setMapperClass(Mapper_no_sequences2.class);
-//            NoSequences2.setReducerClass(Reducer_no_sequences.class);
-//            FileSystem fs2 = FileSystem.get(new Configuration());
-//
-//            Path noOfSequences2 = new Path("noOfSequences2");
-//            if (fs2.exists(noOfSequences2)) {
-//                fs2.delete(noOfSequences2, true); //Delete existing Directory
-//            }
-//            FileOutputFormat.setOutputPath(NoSequences2, noOfSequences2);
-//            FileInputFormat.addInputPath(NoSequences2, noOfSequences);
-//            //Setting configuration object with the Data Type of output Key and Value
-//            NoSequences2.setOutputKeyClass(Text.class);
-//            NoSequences2.setOutputValueClass(Text.class);
-//            NoSequences2.setInputFormatClass(NLinesInputFormat.class);
-//            NoSequences2.waitForCompletion(true);
-//            fs2.delete(noOfSequences, true);
-//            fs2.rename(noOfSequences2, noOfSequences);
-//            Counters counters = NoSequences2.getCounters();
-//            long lastask = counters.findCounter("org.apache.hadoop.mapred.Task$Counter", "MAP_INPUT_RECORDS").getValue();
-//            if (lastask == 1) {
-//                break;
-//            }
-//        }
-//        Path noOfSequencesFile = new Path("noOfSequences/part-r-00000");
-//        BufferedReader bfr = new BufferedReader(new InputStreamReader(fs.open(noOfSequencesFile)));
-//        String totalNoOfSequences = null;
-//        String str;
-//        while ((str = bfr.readLine()) != null) {
-//            if (str.contains("size")) {
-//                totalNoOfSequences = str.split(" ")[1];
-//            }
-//        }
-//
-
         Configuration finalCalcConf = new Configuration();
         finalCalcConf.set("Support", support);
         Job finalCalc = new Job(finalCalcConf);
