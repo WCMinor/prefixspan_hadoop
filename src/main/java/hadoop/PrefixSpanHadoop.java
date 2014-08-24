@@ -52,72 +52,85 @@ public class PrefixSpanHadoop extends Configured implements Tool{
         // Execute job
         PrefixSpan.waitForCompletion(true);
 
-
-        //creating a JobConf object and assigning a Hadoop job name for identification purposes
-        Configuration NoSequencesConf = new Configuration();
-        Job NoSequences = new Job(NoSequencesConf);
-        NoSequences.setJarByClass(PrefixSpanHadoop.class);
-        Path noOfSequences = new Path("noOfSequences");
-        if (fs.exists(noOfSequences)) {
-            fs.delete(noOfSequences, true); //Delete existing Directory
-        }
-        NoSequences.setJobName("Counting number of sequences");
-        //Setting configuration object with the Data Type of output Key and Value
-        NoSequences.setOutputKeyClass(Text.class);
-        NoSequences.setOutputValueClass(Text.class);
-        //Providing the mapper and reducer class names
-        NoSequences.setMapperClass(Mapper_no_sequences.class);
-        NoSequences.setNumReduceTasks(0);
-        //the hdfs input and output directory to be fetched from the command line
-        FileInputFormat.addInputPath(NoSequences, temp_output);
-        NoSequences.setInputFormatClass(NLinesInputFormat.class);
-        FileOutputFormat.setOutputPath(NoSequences, noOfSequences);
-        NoSequences.waitForCompletion(true);
-
-        //reiterate the mapper until no more lines in the input
+        long thistask = 0;
+        long lastask;
         while (true) {
-
-            Configuration NoSequences2Conf = new Configuration();
-            Job NoSequences2 = new Job(NoSequences2Conf);
-            NoSequences2.setJobName("counting sequences");
-            NoSequences2.setJarByClass(PrefixSpanHadoop.class);
-            //Providing the mapper and reducer class names
-            NoSequences2.setMapperClass(Mapper_no_sequences2.class);
-            NoSequences2.setReducerClass(Reducer_no_sequences.class);
-            FileSystem fs2 = FileSystem.get(new Configuration());
-
-            Path noOfSequences2 = new Path("noOfSequences2");
-            if (fs2.exists(noOfSequences2)) {
-                fs2.delete(noOfSequences2, true); //Delete existing Directory
+            lastask =thistask;
+            //creating a JobConf object and assigning a Hadoop job name for identification purposes
+            Configuration NoSequencesConf = new Configuration();
+            Job NoSequences = new Job(NoSequencesConf);
+            NoSequences.setJarByClass(PrefixSpanHadoop.class);
+            Path noOfSequences = new Path("noOfSequences");
+            if (fs.exists(noOfSequences)) {
+                fs.delete(noOfSequences, true); //Delete existing Directory
             }
-            FileOutputFormat.setOutputPath(NoSequences2, noOfSequences2);
-            FileInputFormat.addInputPath(NoSequences2, noOfSequences);
+            NoSequences.setJobName("Counting number of sequences");
             //Setting configuration object with the Data Type of output Key and Value
-            NoSequences2.setOutputKeyClass(Text.class);
-            NoSequences2.setOutputValueClass(Text.class);
-            NoSequences2.setInputFormatClass(NLinesInputFormat.class);
-            NoSequences2.waitForCompletion(true);
-            fs2.delete(noOfSequences, true);
-            fs2.rename(noOfSequences2, noOfSequences);
-            Counters counters = NoSequences2.getCounters();
-            long lastask = counters.findCounter("org.apache.hadoop.mapred.Task$Counter", "MAP_INPUT_RECORDS").getValue();
-            if (lastask == 1) {
+            NoSequences.setOutputKeyClass(Text.class);
+            NoSequences.setOutputValueClass(Text.class);
+            //Providing the mapper and reducer class names
+            NoSequences.setMapperClass(Mapper_no_sequences.class);
+            NoSequences.setNumReduceTasks(0);
+            //the hdfs input and output directory to be fetched from the command line
+            FileInputFormat.addInputPath(NoSequences, temp_output);
+            NoSequences.setInputFormatClass(NLinesInputFormat.class);
+            FileOutputFormat.setOutputPath(NoSequences, noOfSequences);
+            NoSequences.waitForCompletion(true);
+            fs.delete(temp_output, true);
+            fs.rename(noOfSequences, temp_output);
+            //check if it has converged
+            Counters counters = NoSequences.getCounters();
+            thistask = counters.findCounter("org.apache.hadoop.mapred.Task$Counter", "MAP_INPUT_RECORDS").getValue();
+            if (thistask == lastask) {
                 break;
             }
+
         }
-        Path noOfSequencesFile = new Path("noOfSequences/part-r-00000");
-        BufferedReader bfr = new BufferedReader(new InputStreamReader(fs.open(noOfSequencesFile)));
-        String totalNoOfSequences = null;
-        String str;
-        while ((str = bfr.readLine()) != null) {
-            if (str.contains("size")) {
-                totalNoOfSequences = str.split(" ")[1];
-            }
-        }
+
+//        //reiterate the mapper until no more lines in the input
+//        while (true) {
+//
+//            Configuration NoSequences2Conf = new Configuration();
+//            Job NoSequences2 = new Job(NoSequences2Conf);
+//            NoSequences2.setJobName("counting sequences");
+//            NoSequences2.setJarByClass(PrefixSpanHadoop.class);
+//            //Providing the mapper and reducer class names
+//            NoSequences2.setMapperClass(Mapper_no_sequences2.class);
+//            NoSequences2.setReducerClass(Reducer_no_sequences.class);
+//            FileSystem fs2 = FileSystem.get(new Configuration());
+//
+//            Path noOfSequences2 = new Path("noOfSequences2");
+//            if (fs2.exists(noOfSequences2)) {
+//                fs2.delete(noOfSequences2, true); //Delete existing Directory
+//            }
+//            FileOutputFormat.setOutputPath(NoSequences2, noOfSequences2);
+//            FileInputFormat.addInputPath(NoSequences2, noOfSequences);
+//            //Setting configuration object with the Data Type of output Key and Value
+//            NoSequences2.setOutputKeyClass(Text.class);
+//            NoSequences2.setOutputValueClass(Text.class);
+//            NoSequences2.setInputFormatClass(NLinesInputFormat.class);
+//            NoSequences2.waitForCompletion(true);
+//            fs2.delete(noOfSequences, true);
+//            fs2.rename(noOfSequences2, noOfSequences);
+//            Counters counters = NoSequences2.getCounters();
+//            long lastask = counters.findCounter("org.apache.hadoop.mapred.Task$Counter", "MAP_INPUT_RECORDS").getValue();
+//            if (lastask == 1) {
+//                break;
+//            }
+//        }
+//        Path noOfSequencesFile = new Path("noOfSequences/part-r-00000");
+//        BufferedReader bfr = new BufferedReader(new InputStreamReader(fs.open(noOfSequencesFile)));
+//        String totalNoOfSequences = null;
+//        String str;
+//        while ((str = bfr.readLine()) != null) {
+//            if (str.contains("size")) {
+//                totalNoOfSequences = str.split(" ")[1];
+//            }
+//        }
+//
 
         Configuration finalCalcConf = new Configuration();
         finalCalcConf.set("Support", support);
-        finalCalcConf.set("noOfSequences", totalNoOfSequences);
         Job finalCalc = new Job(finalCalcConf);
         finalCalc.setJobName("gathering all sequences and filtering by support");
         finalCalc.setJarByClass(PrefixSpanHadoop.class);
