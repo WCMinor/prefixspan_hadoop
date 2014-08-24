@@ -18,7 +18,7 @@ import org.apache.hadoop.util.LineReader;
 import java.io.IOException;
 
 public class NLinesRecordReader extends RecordReader<LongWritable, Text>{
-    private final int NLINESTOPROCESS = 30;
+    private final int NLINESTOPROCESS = 3000;
     private LineReader in;
     private LongWritable key;
     private Text value = new Text();
