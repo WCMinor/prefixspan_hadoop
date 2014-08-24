@@ -12,6 +12,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.v2.api.records.Counter;
 import org.apache.hadoop.util.*;
@@ -46,7 +47,7 @@ public class PrefixSpanHadoop extends Configured implements Tool{
 
         //the hdfs input and output directory to be fetched from the command line
         FileInputFormat.addInputPath(PrefixSpan, new Path(arg[0]));
-        PrefixSpan.setInputFormatClass(CustomFileInputFormat.class);
+        PrefixSpan.setInputFormatClass(TextInputFormat.class);
         FileOutputFormat.setOutputPath(PrefixSpan, temp_output);
         // Execute job
         PrefixSpan.waitForCompletion(true);

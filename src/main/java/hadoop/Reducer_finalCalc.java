@@ -12,8 +12,8 @@ public class Reducer_finalCalc extends Reducer<Text, Text, Text, Text>{
 
     public void reduce(Text key, Iterable<Text> value, Context context) throws IOException, InterruptedException {
         Configuration conf = context.getConfiguration();
-        Double Support = Double.valueOf(conf.get("Support"));
-        Long noOfSequences = Long.valueOf(conf.get("noOfSequences"));
+        double Support = Double.valueOf(conf.get("Support"));
+        long noOfSequences = Long.valueOf(conf.get("noOfSequences"));
         long support = 0;
         long totalSupport;
         itemset.set(key);
