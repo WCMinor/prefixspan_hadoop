@@ -14,7 +14,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.v2.api.records.Counter;
 import org.apache.hadoop.util.*;
 
 import java.io.*;
@@ -24,7 +23,7 @@ public class PrefixSpanHadoop extends Configured implements Tool{
     public int run(String[] arg) throws IOException, ClassNotFoundException, InterruptedException {
 
 
-        //creating a JobConf object and assigning a Hadoop job name for identification purposes
+        //First Job, here the algorithm is ran
         Configuration prefixconf = new Configuration();
         String support = arg[1];
         prefixconf.set("Support", support);
@@ -36,15 +35,12 @@ public class PrefixSpanHadoop extends Configured implements Tool{
             fs.delete(temp_output, true); //Delete existing Directory
         }
         PrefixSpan.setJobName("Mining the Data");
-
         //Setting configuration object with the Data Type of output Key and Value
         PrefixSpan.setOutputKeyClass(Text.class);
         PrefixSpan.setOutputValueClass(Text.class);
-
         //Providing the mapper and reducer class names
         PrefixSpan.setMapperClass(PrefixSpanMapper.class);
         PrefixSpan.setNumReduceTasks(0);
-
         //the hdfs input and output directory to be fetched from the command line
         FileInputFormat.addInputPath(PrefixSpan, new Path(arg[0]));
         PrefixSpan.setInputFormatClass(TextInputFormat.class);
@@ -52,17 +48,17 @@ public class PrefixSpanHadoop extends Configured implements Tool{
         // Execute job
         PrefixSpan.waitForCompletion(true);
 
+        //Second job, iterating mapper tasks until we get a list of sequences and the count of each
         long thistask = 0;
         long lastask;
         while (true) {
             lastask =thistask;
-            //creating a JobConf object and assigning a Hadoop job name for identification purposes
             Configuration NoSequencesConf = new Configuration();
             Job NoSequences = new Job(NoSequencesConf);
             NoSequences.setJarByClass(PrefixSpanHadoop.class);
-            Path noOfSequences = new Path("noOfSequences");
-            if (fs.exists(noOfSequences)) {
-                fs.delete(noOfSequences, true); //Delete existing Directory
+            Path Sequences = new Path("Sequences");
+            if (fs.exists(Sequences)) {
+                fs.delete(Sequences, true); //Delete existing Directory
             }
             NoSequences.setJobName("Counting number of sequences");
             //Setting configuration object with the Data Type of output Key and Value
@@ -74,20 +70,45 @@ public class PrefixSpanHadoop extends Configured implements Tool{
             //the hdfs input and output directory to be fetched from the command line
             FileInputFormat.addInputPath(NoSequences, temp_output);
             NoSequences.setInputFormatClass(NLinesInputFormat.class);
-            FileOutputFormat.setOutputPath(NoSequences, noOfSequences);
+            FileOutputFormat.setOutputPath(NoSequences, Sequences);
             NoSequences.waitForCompletion(true);
             fs.delete(temp_output, true);
-            fs.rename(noOfSequences, temp_output);
+            fs.rename(Sequences, temp_output);
             //check if it has converged
             Counters counters = NoSequences.getCounters();
             thistask = counters.findCounter("org.apache.hadoop.mapred.Task$Counter", "MAP_INPUT_RECORDS").getValue();
             if (thistask == lastask) {
                 break;
             }
-
         }
 
+        //Thirth job getting the total number of sequences found
+        Configuration getnumOfSeqsconf = new Configuration();
+        Job getnumOfSeqs = new Job(getnumOfSeqsconf);
+        getnumOfSeqs.setJobName("get total number of sequences");
+        getnumOfSeqs.setJarByClass(PrefixSpanHadoop.class);
+        //Providing the mapper and reducer class names
+        getnumOfSeqs.setMapperClass(Mapper_getnumOfSeqs.class);
+        getnumOfSeqs.setReducerClass(Reducer_getnumOfSeqs.class);
+        Path numOfSeqs = new Path("numOfSeqs");
+        if (fs.exists(numOfSeqs)) {
+            fs.delete(numOfSeqs, true); //Delete existing Directory
+        }
+        FileOutputFormat.setOutputPath(getnumOfSeqs, numOfSeqs);
+        FileInputFormat.addInputPath(getnumOfSeqs, temp_output);
+        //Setting configuration object with the Data Type of output Key and Value
+        getnumOfSeqs.setOutputKeyClass(Text.class);
+        getnumOfSeqs.setOutputValueClass(Text.class);
+        getnumOfSeqs.setInputFormatClass(NLinesInputFormat.class);
+        getnumOfSeqs.waitForCompletion(true);
+
+        //Last job wrapping up everything
+        Path numOfSeqs_file = new Path("numOfSeqs/part-r-00000");
+        BufferedReader bfr=new BufferedReader(new InputStreamReader(fs.open(numOfSeqs_file)));
+        String str = null;
+        String numofSeqs = bfr.readLine().split("\t")[1];
         Configuration finalCalcConf = new Configuration();
+        finalCalcConf.set("numofSeqs", numofSeqs);
         finalCalcConf.set("Support", support);
         Job finalCalc = new Job(finalCalcConf);
         finalCalc.setJobName("gathering all sequences and filtering by support");
