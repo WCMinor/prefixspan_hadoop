@@ -23,7 +23,7 @@ public class PrefixSpanHadoop extends Configured implements Tool{
     public int run(String[] arg) throws IOException, ClassNotFoundException, InterruptedException {
 
 
-        //First Job, here the algorithm is ran
+//        //First Job, here the algorithm is ran
         Configuration prefixconf = new Configuration();
         String support = arg[1];
         prefixconf.set("Support", support);
@@ -83,24 +83,7 @@ public class PrefixSpanHadoop extends Configured implements Tool{
         }
 
         //Thirth job getting the total number of sequences found
-        Configuration getnumOfSeqsconf = new Configuration();
-        Job getnumOfSeqs = new Job(getnumOfSeqsconf);
-        getnumOfSeqs.setJobName("get total number of sequences");
-        getnumOfSeqs.setJarByClass(PrefixSpanHadoop.class);
-        //Providing the mapper and reducer class names
-        getnumOfSeqs.setMapperClass(Mapper_getnumOfSeqs.class);
-        getnumOfSeqs.setReducerClass(Reducer_getnumOfSeqs.class);
-        Path numOfSeqs = new Path("numOfSeqs");
-        if (fs.exists(numOfSeqs)) {
-            fs.delete(numOfSeqs, true); //Delete existing Directory
-        }
-        FileOutputFormat.setOutputPath(getnumOfSeqs, numOfSeqs);
-        FileInputFormat.addInputPath(getnumOfSeqs, temp_output);
-        //Setting configuration object with the Data Type of output Key and Value
-        getnumOfSeqs.setOutputKeyClass(Text.class);
-        getnumOfSeqs.setOutputValueClass(Text.class);
-        getnumOfSeqs.setInputFormatClass(NLinesInputFormat.class);
-        getnumOfSeqs.waitForCompletion(true);
+
 
         //Last job wrapping up everything
         Path numOfSeqs_file = new Path("numOfSeqs/part-r-00000");

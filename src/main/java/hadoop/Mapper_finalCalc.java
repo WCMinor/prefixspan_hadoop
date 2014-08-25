@@ -47,12 +47,12 @@ public class Mapper_finalCalc extends Mapper<LongWritable, Text, Text, Text> {
             }
         }
         for (String i : listresults.keySet()){
-            if (Long.valueOf(listresults.get(i)) >= numofSeqs*Support) {
+//            if (Long.valueOf(listresults.get(i)) >= numofSeqs*Support) {
                 if (!i.contentEquals("size")) {
                     result.set(listresults.get(i));
                     newkey.set(i);
                     context.write(newkey, result);
-                }
+//                }
             }
         }
     }
