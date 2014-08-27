@@ -6,8 +6,11 @@ package hadoop;
 
 
 import org.apache.hadoop.conf.*;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
@@ -104,11 +107,20 @@ public class PrefixSpanHadoop extends Configured implements Tool{
 
 
         //Last job wrapping up everything
-        Path numOfSeqs_file = new Path("numOfSeqs/part-r-00000");
-        BufferedReader bfr=new BufferedReader(new InputStreamReader(fs.open(numOfSeqs_file)));
-        String str = null;
-        String numofSeqs = bfr.readLine().split("\t")[1];
         Configuration finalCalcConf = new Configuration();
+        //get the number of sequences from the previous job scanning the output folder
+        String numofSeqs = "0";
+        FileStatus[] fss = fs.listStatus(numOfSeqs);
+        for (FileStatus status : fss) {
+            Path path = status.getPath();
+            BufferedReader bfr=new BufferedReader(new InputStreamReader(fs.open(path)));
+            if (bfr.ready()){
+                String[] line = bfr.readLine().split("\t");
+                if (line[0].contains("size")) {
+                    numofSeqs = line[1];
+                }
+            }
+        }
         finalCalcConf.set("numofSeqs", numofSeqs);
         finalCalcConf.set("Support", support);
         Job finalCalc = new Job(finalCalcConf);
